@@ -10,14 +10,16 @@ export class TacheHtml {
     constructor(tache) {
         this.tache = tache;
         this.elementParentHTML = document.createElement('div');
+        this.elementParentHTML.classList.add("d-flex", "mb-2")
 
         this.texte = document.createElement('div')
+        this.texte.classList.add("m-2")
         this.texte.textContent = tache.titre;
 
         let checkbox = document.createElement("input");
         checkbox.setAttribute("type", "checkbox");
         if (tache.termine) {
-            this.texte.setAttribute("class", "text-decoration-line-through");
+            this.texte.setAttribute("class", "m-2 text-decoration-line-through");
             checkbox.setAttribute("checked", "");
         }
 
@@ -27,6 +29,7 @@ export class TacheHtml {
 
 
         let buttonDelete = document.createElement('button');
+        buttonDelete.classList.add("btn", "btn-outline-danger")
         buttonDelete.textContent = 'Supprimer';
         buttonDelete.addEventListener('click', e => this.remove());
 
@@ -45,9 +48,9 @@ export class TacheHtml {
         this.tache.termine = !this.tache.termine;
         await updateTaches(this.tache);
         if (this.tache.termine) {
-            this.texte.setAttribute("class", "text-decoration-line-through");
+            this.texte.setAttribute("class", "m-2 text-decoration-line-through");
         } else {
-            this.texte.setAttribute("class", "")
+            this.texte.setAttribute("class", "m-2")
         }
     }
 }
