@@ -25,11 +25,14 @@ app.use(session({
 
 
 function checkSignIn(req, res, next) {
+    next();
+    /*
     if (req.session.user) {
         next(); //Si la session exist on passe au handler normal.
     } else {
-        res.status(401).send("Unauthorized");
+        res.status(401).send({ "message": "Unauthorized"});
     }
+    */
 }
 
 app.post('/signin', signIn);

@@ -31,8 +31,9 @@ exports.tacheDelete = async function(req, res, next) {
     try {
         db = await MongoClient.connect(url);
         let dbo = db.db("taches");
+        let tache = await dbo.collection("taches").find({ _id: new mongodb.ObjectId(req.params.id) }).toArray();
         await dbo.collection("taches").deleteOne({ _id: new mongodb.ObjectId(req.params.id) });
-        res.status(200).send();
+        res.status(200).json(tache);
     } catch (err) {
         console.log(err);
         res.status(500).json({ message: err })
@@ -44,7 +45,8 @@ exports.tachePut = async function(req, res, next) {
         db = await MongoClient.connect(url);
         let dbo = db.db("taches");
         await dbo.collection("taches").updateOne({ _id: new mongodb.ObjectId(req.params.id) }, { $set: { titre: req.body.titre, termine: req.body.termine } });
-        res.status(200).send();
+        let tache = await dbo.collection("taches").find({ _id: new mongodb.ObjectId(req.params.id) }).toArray();
+        res.status(200).json(tache);
     } catch (err) {
         console.log(err);
         res.status(500).json({ message: err })
