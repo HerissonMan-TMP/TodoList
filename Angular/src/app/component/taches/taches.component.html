@@ -8,11 +8,20 @@
             <h1>Undefined</h1>
         </div>
         <div class="d-flex flex-row mb-2">
-            <input id="inputAjoutTache_absenceDeValeur" class="saisieInput" type="text" name="tache" placeholder="Tache">
-            <button id="buttonAjoutTache_absenceDeValeur" class="btn btn-primary" value="Ajouter">Ajouter</button>
+            <input class="saisieInput" type="text" name="tache" placeholder="Tache" [(ngModel)]="newTache['absenceDeValeur'].titre">
+            <button class="btn btn-primary" value="Ajouter" (click)='ajouter(newTache["absenceDeValeur"].statut)'>Ajouter</button>
         </div>
         <div class="d-flex justify-content-start">
-            <div id="listeTaches_absenceDeValeur" class="d-flex flex-column">
+            <div class="d-flex flex-column w-100">
+                <ng-container *ngFor="let tache of taches">
+                    <div class="m-2 w-100 d-flex justify-content-between" *ngIf="tache.statut == 'absenceDeValeur'">
+                        <div class="d-flex align-items-center">
+                            <input type="checkbox" [(ngModel)]="tache.termine" (click)="modifier(tache)">
+                            <span [ngClass]="tache.termine? 'text-decoration-line-through' : '' ">{{ tache.titre }}</span>
+                        </div>
+                        <button class="btn btn-outline-danger" (click)='supprimer(tache)'>Supprimer</button>
+                    </div>
+                </ng-container>
             </div>
         </div>
         <div class="d-flex flex-row justify-content-around">
@@ -24,11 +33,20 @@
             <h1>En Attente</h1>
         </div>
         <div class="d-flex flex-row mb-2">
-            <input id="inputAjoutTache_enAttente" class="saisieInput" type="text" name="tache" placeholder="Tache">
-            <button id="buttonAjoutTache_enAttente" class="btn btn-primary" value="Ajouter">Ajouter</button>
+            <input class="saisieInput" type="text" name="tache" placeholder="Tache" [(ngModel)]="newTache['enAttente'].titre">
+            <button class="btn btn-primary" value="Ajouter" (click)='ajouter(newTache["enAttente"].statut)'>Ajouter</button>
         </div>
         <div class="d-flex justify-content-start">
-            <div id="listeTaches_enAttente" class="d-flex  flex-column">
+            <div class="d-flex flex-column w-100">
+                <ng-container *ngFor="let tache of taches">
+                    <div class="m-2 w-100 d-flex justify-content-between" *ngIf="tache.statut == 'enAttente'">
+                        <div class="d-flex align-items-center">
+                            <input type="checkbox" [(ngModel)]="tache.termine" (click)="modifier(tache)">
+                            <span [ngClass]="tache.termine? 'text-decoration-line-through' : '' ">{{ tache.titre }}</span>
+                        </div>
+                        <button class="btn btn-outline-danger" (click)='supprimer(tache)'>Supprimer</button>
+                    </div>
+                </ng-container>
             </div>
         </div>
         <div class="d-flex flex-row justify-content-around">
@@ -40,11 +58,20 @@
             <h1>En Cours</h1>
         </div>
         <div class="d-flex flex-row mb-2">
-            <input id="inputAjoutTache_enCours" class="saisieInput" type="text" name="tache" placeholder="Tache">
-            <button id="buttonAjoutTache_enCours" class="btn btn-primary" value="Ajouter">Ajouter</button>
+            <input class="saisieInput" type="text" name="tache" placeholder="Tache" [(ngModel)]="newTache['enCours'].titre">
+            <button class="btn btn-primary" value="Ajouter" (click)='ajouter(newTache["enCours"].statut)'>Ajouter</button>
         </div>
         <div class="d-flex justify-content-start">
-            <div id="listeTaches_enCours" class="d-flex  flex-column">
+            <div class="d-flex flex-column w-100">
+                <ng-container *ngFor="let tache of taches">
+                    <div class="m-2 w-100 d-flex justify-content-between" *ngIf="tache.statut == 'enCours'">
+                        <div class="d-flex align-items-center">
+                            <input type="checkbox" [(ngModel)]="tache.termine" (click)="modifier(tache)">
+                            <span [ngClass]="tache.termine? 'text-decoration-line-through' : '' ">{{ tache.titre }}</span>
+                        </div>
+                        <button class="btn btn-outline-danger" (click)='supprimer(tache)'>Supprimer</button>
+                    </div>
+                </ng-container>
             </div>
         </div>
         <div class="d-flex flex-row justify-content-around">
@@ -56,11 +83,20 @@
             <h1>Terminé</h1>
         </div>
         <div class="d-flex flex-row mb-2">
-            <input id="inputAjoutTache_termine" class="saisieInput" type="text" name="tache" placeholder="Tache">
-            <button id="buttonAjoutTache_termine" class="btn btn-primary" value="Ajouter">Ajouter</button>
+            <input class="saisieInput" type="text" name="tache" placeholder="Tache" [(ngModel)]="newTache['termine'].titre">
+            <button class="btn btn-primary" value="Ajouter" (click)='ajouter(newTache["termine"].statut)'>Ajouter</button>
         </div>
         <div class="d-flex justify-content-start">
-            <div id="listeTaches_termine" class="d-flex  flex-column">
+            <div class="d-flex flex-column w-100">
+                <ng-container *ngFor="let tache of taches">
+                    <div class="m-2 w-100 d-flex justify-content-between" *ngIf="tache.statut == 'termine'">
+                        <div class="d-flex align-items-center">
+                            <input type="checkbox" [(ngModel)]="tache.termine" (click)="modifier(tache)">
+                            <span [ngClass]="tache.termine? 'text-decoration-line-through' : '' ">{{ tache.titre }}</span>
+                        </div>
+                        <button class="btn btn-outline-danger" (click)='supprimer(tache)'>Supprimer</button>
+                    </div>
+                </ng-container>
             </div>
         </div>
         <div class="d-flex flex-row justify-content-around">
