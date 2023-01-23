@@ -42,9 +42,10 @@ exports.tacheDelete = async function(req, res, next) {
 
 exports.tachePut = async function(req, res, next) {
     try {
+        console.log(req.body);
         db = await MongoClient.connect(url);
         let dbo = db.db("taches");
-        await dbo.collection("taches").updateOne({ _id: new mongodb.ObjectId(req.params.id) }, { $set: { titre: req.body.titre, termine: req.body.termine } });
+        await dbo.collection("taches").updateOne({ _id: new mongodb.ObjectId(req.params.id) }, { $set: { titre: req.body.titre, termine: req.body.termine, statut: req.body.statut } });
         let tache = await dbo.collection("taches").find({ _id: new mongodb.ObjectId(req.params.id) }).toArray();
         res.status(200).json(tache);
     } catch (err) {

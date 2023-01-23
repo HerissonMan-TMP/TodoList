@@ -1,9 +1,14 @@
+import { CdkDragDrop } from '@angular/cdk/drag-drop';
 import { Component, OnInit } from '@angular/core';
 import { Tache } from 'src/app/model/tache';
 import { TachesService } from 'src/app/service/taches.service';
 
 interface newTachesInterface {
   [key: string]: Tache
+}
+
+interface tachesInterface {
+  [key: string]: Array<Tache>
 }
 
 @Component({
@@ -15,35 +20,34 @@ export class TachesComponent implements OnInit {
 
   constructor(private tacheService: TachesService) { }
 
-  taches: Array<Tache> = [];
+  listes = [
+    'absenceDeValeur',
+    'enAttente',
+    'enCours',
+    'termine',
+    'acquis'
+  ];
 
-  newTache: newTachesInterface = {
-    'absenceDeValeur': {
-      titre : '',
-      termine : false,
-      statut: 'absenceDeValeur'
-    },
-    'enAttente': {
-      titre : '',
-      termine : false,
-      statut: 'enAttente'
-    },
-    'enCours': {
-      titre : '',
-      termine : false,
-      statut: 'enCours'
-    },
-    'termine': {
-      titre : '',
-      termine : false,
-      statut: 'termine'
-    }
-  }
+  taches: tachesInterface = {};
+
+  newTache: newTachesInterface = {};
 
   ngOnInit(): void {
+    for (let statut of this.listes) {
+      this.taches[statut] = [];
+
+      this.newTache[statut] = {
+        titre : '',
+        termine : false,
+        statut
+      }
+    }
+
     this.tacheService.getTaches().subscribe({
       next: (data:Array<Tache>) => {
-        this.taches = data;
+        for (let tache of data) {
+          this.taches[tache.statut].push(tache)
+        }
       }
     });
   }
@@ -51,7 +55,7 @@ export class TachesComponent implements OnInit {
   ajouter(statut: string) {
     this.tacheService.ajoutTaches(this.newTache[statut]).subscribe({
       next:(data) =>{
-        this.taches.push(data)
+        this.taches[data.statut].push(data)
       }
     });
   }
@@ -59,7 +63,7 @@ export class TachesComponent implements OnInit {
   supprimer(tacheASupprimer: Tache) {
     this.tacheService.removeTaches(tacheASupprimer).subscribe({
       next:(data) =>{
-        this.taches = this.taches.filter(tache => tache._id != tacheASupprimer._id)
+        this.taches[tacheASupprimer.statut] = this.taches[tacheASupprimer.statut].filter(tache => tache._id != tacheASupprimer._id)
       }
     });
   }
@@ -69,12 +73,31 @@ export class TachesComponent implements OnInit {
 
     this.tacheService.updateTaches(tacheAModifier).subscribe({
       next:(data) =>{
-        this.taches.map(tache => {
-          if (tache._id == data._id) {
-            tache = data
+        this.taches[tacheAModifier.statut] = this.taches[tacheAModifier.statut].map(tache => {
+          if (tache._id == tacheAModifier._id) {
+            return tacheAModifier
+          } else {
+            return tache
           }
         })
       }
     });
+  }
+
+  drop(event: CdkDragDrop<string[]>, statut: string) {
+    if (event.previousContainer != event.container) {
+      let statutPrecedent = event.item.data.statut;
+
+      let tacheADeplacer = event.item.data;
+      tacheADeplacer.statut = statut;
+
+      this.tacheService.updateTaches(tacheADeplacer).subscribe({
+        next:(data) =>{
+          this.taches[statutPrecedent] = this.taches[statutPrecedent].filter(tache => tache._id != tacheADeplacer._id);
+
+          this.taches[statut].push(tacheADeplacer);
+        }
+      });
+    }
   }
 }
