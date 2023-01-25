@@ -1,7 +1,9 @@
 import { CdkDragDrop } from '@angular/cdk/drag-drop';
 import { Component, OnInit } from '@angular/core';
 import { Tache } from 'src/app/model/tache';
+import { Liste } from 'src/app/model/liste';
 import { TachesService } from 'src/app/service/taches.service';
+import { ListesService } from 'src/app/service/listes.service';
 
 interface newTachesInterface {
   [key: string]: Tache
@@ -18,30 +20,36 @@ interface tachesInterface {
 })
 export class TachesComponent implements OnInit {
 
-  constructor(private tacheService: TachesService) { }
+  constructor(private tacheService: TachesService, private listeService: ListesService) { }
 
-  listes = [
-    'absenceDeValeur',
-    'enAttente',
-    'enCours',
-    'termine',
-    'acquis'
-  ];
+  listes: Array<Liste> = [];
 
   taches: tachesInterface = {};
 
   newTache: newTachesInterface = {};
 
-  ngOnInit(): void {
-    for (let statut of this.listes) {
-      this.taches[statut] = [];
+  newListe: Liste = {
+    titre: '',
+  };
 
-      this.newTache[statut] = {
-        titre : '',
-        termine : false,
-        statut
+  ngOnInit(): void {
+
+
+    this.listeService.getListes().subscribe({
+      next: (data:Array<Liste>) => {
+        for (let liste of data) {
+          this.listes.push(liste)
+
+          this.taches[liste.titre] = [];
+    
+          this.newTache[liste.titre] = {
+            titre : '',
+            termine : false,
+            statut: liste.titre
+          }
+        }
       }
-    }
+    });
 
     this.tacheService.getTaches().subscribe({
       next: (data:Array<Tache>) => {
@@ -50,6 +58,38 @@ export class TachesComponent implements OnInit {
         }
       }
     });
+  }
+
+  ajouterListe() {
+    this.listeService.ajoutListes(this.newListe).subscribe({
+      next:(data) =>{
+        this.listes.push(data)
+
+        this.taches[data.titre] = [];
+    
+          this.newTache[data.titre] = {
+            titre : '',
+            termine : false,
+            statut: data.titre
+          }
+      }
+    });
+  }
+
+  supprimerListe(liste: Liste) {
+    this.listeService.removeListes(liste).subscribe({
+      next:(data) =>{
+        delete this.newTache[liste.titre];
+
+        for (let tache of this.taches[liste.titre]) {
+          this.supprimer(tache);
+        }
+
+        delete this.taches[liste.titre];
+
+        this.listes = this.listes.filter(item => item._id != liste._id);
+      }
+    })
   }
 
   ajouter(statut: string) {
@@ -84,18 +124,18 @@ export class TachesComponent implements OnInit {
     });
   }
 
-  drop(event: CdkDragDrop<string[]>, statut: string) {
+  drop(event: CdkDragDrop<string[]>, liste: Liste) {
     if (event.previousContainer != event.container) {
       let statutPrecedent = event.item.data.statut;
 
       let tacheADeplacer = event.item.data;
-      tacheADeplacer.statut = statut;
+      tacheADeplacer.statut = liste.titre;
 
       this.tacheService.updateTaches(tacheADeplacer).subscribe({
         next:(data) =>{
           this.taches[statutPrecedent] = this.taches[statutPrecedent].filter(tache => tache._id != tacheADeplacer._id);
 
-          this.taches[statut].push(tacheADeplacer);
+          this.taches[liste.titre].push(tacheADeplacer);
         }
       });
     }

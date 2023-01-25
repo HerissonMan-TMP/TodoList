@@ -1,20 +1,26 @@
-<div class="container-fluid d-flex justify-content-center">
+<div class="text-center">
     <h1>Taches</h1>
+    <div>
+        <input class="saisieInput" type="text" name="liste" placeholder="Liste" [(ngModel)]="newListe.titre">
+        <button class="btn btn-primary" value="Ajouter" (click)='ajouterListe()'>Ajouter</button>
+    </div>
 </div>
+
 
 <div id="Global" class="container-fluid d-flex justify-content-between" cdkDropListGroup>
     <div *ngFor="let liste of listes">
         <div class="d-flex flex-column">
             <div class="bd-highlight d-flex justify-content-center">
-                <h1>{{ liste }}</h1>
+                <h1>{{ liste.titre }}</h1>
             </div>
+            <button class="btn btn-outline-danger" (click)='supprimerListe(liste)'>Supprimer</button>
             <div class="d-flex flex-row mb-2">
-                <input class="saisieInput" type="text" name="tache" placeholder="Tache" [(ngModel)]="newTache[liste].titre">
-                <button class="btn btn-primary" value="Ajouter" (click)='ajouter(newTache[liste].statut)'>Ajouter</button>
+                <input class="saisieInput" type="text" name="tache" placeholder="Tache" [(ngModel)]="newTache[liste.titre].titre">
+                <button class="btn btn-primary" value="Ajouter" (click)='ajouter(newTache[liste.titre].statut)'>Ajouter</button>
             </div>
             <div class="d-flex justify-content-start">
-                <div class="d-flex flex-column w-100" [ngStyle]="{'height': taches[liste].length == 0 ? '50px' : 'initial'}" cdkDropList (cdkDropListDropped)="drop($event, liste)">
-                    <div *ngFor="let tache of taches[liste]" cdkDrag [cdkDragData]="tache" class="m-2 w-100 d-flex justify-content-between">
+                <div class="d-flex flex-column w-100" [ngStyle]="{'height': taches[liste.titre].length == 0 ? '50px' : 'initial'}" cdkDropList (cdkDropListDropped)="drop($event, liste)">
+                    <div *ngFor="let tache of taches[liste.titre]" cdkDrag [cdkDragData]="tache" class="m-2 w-100 d-flex justify-content-between">
                         <div class="d-flex align-items-center">
                             <input type="checkbox" [(ngModel)]="tache.termine" (click)="modifier(tache)">
                             <span [ngClass]="tache.termine? 'text-decoration-line-through' : '' ">{{ tache.titre }}</span>
