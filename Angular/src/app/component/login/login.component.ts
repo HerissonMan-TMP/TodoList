@@ -20,7 +20,10 @@ export class LoginComponent implements OnInit {
 
   submit(): void { 
     this.userService.login(this.user).subscribe({ 
-      next: () => { this.router.navigate(['taches']) }, 
+      next: (data: any) => {
+        document.cookie = `user=${data.userId};`;
+        this.router.navigate(['taches'])
+      }, 
       error: () => { this.error = true; } });
      }
 

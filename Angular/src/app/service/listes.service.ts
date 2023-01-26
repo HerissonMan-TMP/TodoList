@@ -11,7 +11,7 @@ export class ListesService {
 
   constructor(private http: HttpClient) { }
 
-  getListes(): Observable < Array < Liste >> {
+  getListes(userId: string): Observable < Array < Liste >> {
     return this.http.get<Array<Liste>>(this.url, {
       withCredentials: true
     });

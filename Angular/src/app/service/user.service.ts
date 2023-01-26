@@ -10,7 +10,7 @@ export class UserService {
 
   constructor(private http: HttpClient) {  }
 
-  login(user: User): Observable<void> { 
+  login(user: User): Observable<void> {
     return this.http.post<void>(this.url, user, { withCredentials: true }); 
   } 
 

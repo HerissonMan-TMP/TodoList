@@ -4,6 +4,8 @@ import { Tache } from 'src/app/model/tache';
 import { Liste } from 'src/app/model/liste';
 import { TachesService } from 'src/app/service/taches.service';
 import { ListesService } from 'src/app/service/listes.service';
+import { UserService } from 'src/app/service/user.service';
+import { Router } from '@angular/router';
 
 interface newTachesInterface {
   [key: string]: Tache
@@ -13,6 +15,10 @@ interface tachesInterface {
   [key: string]: Array<Tache>
 }
 
+interface parsedCookieInterface {
+  [key: string]: any
+}
+
 @Component({
   selector: 'app-taches',
   templateUrl: './taches.component.html',
@@ -20,9 +26,14 @@ interface tachesInterface {
 })
 export class TachesComponent implements OnInit {
 
-  constructor(private tacheService: TachesService, private listeService: ListesService) { }
+  constructor(private tacheService: TachesService, private listeService: ListesService, private userService: UserService, private router: Router) { }
 
   listes: Array<Liste> = [];
+
+  console = console;
+  cookie: any;
+
+  userId: string = '';
 
   taches: tachesInterface = {};
 
@@ -30,13 +41,34 @@ export class TachesComponent implements OnInit {
 
   newListe: Liste = {
     titre: '',
+    userId: '',
   };
 
   ngOnInit(): void {
+    let parsedCookie: parsedCookieInterface = document.cookie
+      .split(';')
+      .reduce((res, c) => {
+        const [key, val] = c.trim().split('=').map(decodeURIComponent)
+        try {
+          return Object.assign(res, { [key]: JSON.parse(val) })
+        } catch (e) {
+          return Object.assign(res, { [key]: val })
+        }
+      }, {});
 
+    this.userService.isConnected().subscribe({
+      next: (data: any) => {
+        if (data.user == null) {
+          this.router.navigate([''])
+        } else {
+          this.userId = data.user._id;
+        }
+      }
+    })
 
-    this.listeService.getListes().subscribe({
+    this.listeService.getListes(this.userId).subscribe({
       next: (data:Array<Liste>) => {
+        this.cookie = data;
         for (let liste of data) {
           this.listes.push(liste)
 
@@ -45,7 +77,8 @@ export class TachesComponent implements OnInit {
           this.newTache[liste.titre] = {
             titre : '',
             termine : false,
-            statut: liste.titre
+            statut: liste.titre,
+            userId: this.userId,
           }
         }
       }
@@ -61,6 +94,7 @@ export class TachesComponent implements OnInit {
   }
 
   ajouterListe() {
+    this.newListe.userId = this.userId;
     this.listeService.ajoutListes(this.newListe).subscribe({
       next:(data) =>{
         this.listes.push(data)
@@ -70,7 +104,8 @@ export class TachesComponent implements OnInit {
           this.newTache[data.titre] = {
             titre : '',
             termine : false,
-            statut: data.titre
+            statut: data.titre,
+            userId: this.userId,
           }
       }
     });
@@ -139,5 +174,13 @@ export class TachesComponent implements OnInit {
         }
       });
     }
+  }
+
+  logout() {
+    this.userService.logout().subscribe({
+      next: (data) => {
+        this.router.navigate(['']);
+      }
+    });
   }
 }
