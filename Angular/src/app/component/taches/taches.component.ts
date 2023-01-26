@@ -15,10 +15,6 @@ interface tachesInterface {
   [key: string]: Array<Tache>
 }
 
-interface parsedCookieInterface {
-  [key: string]: any
-}
-
 @Component({
   selector: 'app-taches',
   templateUrl: './taches.component.html',
@@ -29,9 +25,6 @@ export class TachesComponent implements OnInit {
   constructor(private tacheService: TachesService, private listeService: ListesService, private userService: UserService, private router: Router) { }
 
   listes: Array<Liste> = [];
-
-  console = console;
-  cookie: any;
 
   userId: string = '';
 
@@ -45,17 +38,6 @@ export class TachesComponent implements OnInit {
   };
 
   ngOnInit(): void {
-    let parsedCookie: parsedCookieInterface = document.cookie
-      .split(';')
-      .reduce((res, c) => {
-        const [key, val] = c.trim().split('=').map(decodeURIComponent)
-        try {
-          return Object.assign(res, { [key]: JSON.parse(val) })
-        } catch (e) {
-          return Object.assign(res, { [key]: val })
-        }
-      }, {});
-
     this.userService.isConnected().subscribe({
       next: (data: any) => {
         if (data.user == null) {
@@ -68,7 +50,6 @@ export class TachesComponent implements OnInit {
 
     this.listeService.getListes(this.userId).subscribe({
       next: (data:Array<Liste>) => {
-        this.cookie = data;
         for (let liste of data) {
           this.listes.push(liste)
 

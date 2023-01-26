@@ -10,6 +10,10 @@ export class UserService {
 
   constructor(private http: HttpClient) {  }
 
+  register(user: User): Observable<void> {
+    return this.http.post<void>('http://localhost:3000/signin', user, { withCredentials: true }); 
+  } 
+
   login(user: User): Observable<void> {
     return this.http.post<void>(this.url, user, { withCredentials: true }); 
   } 

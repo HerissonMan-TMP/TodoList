@@ -1,5 +1,5 @@
 <div class="position-absolute end-0">
-    <button class="btn btn-outline-danger mt-4 me-4" value="Log out" (click)='logout()'>{{ userId }} Log out</button>
+    <button class="btn btn-outline-danger mt-4 me-4" value="Log out" (click)='logout()'>Log out</button>
 </div>
 
 <div class="text-center">
@@ -9,9 +9,6 @@
         <button class="btn btn-primary" value="Ajouter" (click)='ajouterListe()'>Ajouter</button>
     </div>
 </div>
-
-{{ console.log(cookie) }}
-
 
 <div id="Global" class="container-fluid d-flex justify-content-between" cdkDropListGroup>
     <div *ngFor="let liste of listes">

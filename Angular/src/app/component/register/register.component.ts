@@ -4,11 +4,11 @@ import { User } from 'src/app/model/user';
 import { UserService } from 'src/app/service/user.service';
 
 @Component({
-  selector: 'app-login',
-  templateUrl: './login.component.html',
-  styleUrls: ['./login.component.css']
+  selector: 'app-register',
+  templateUrl: './register.component.html',
+  styleUrls: ['./register.component.css']
 })
-export class LoginComponent implements OnInit {
+export class RegisterComponent implements OnInit {
 
   user: User = { login: '', password: '' };
   error: boolean = false;
@@ -19,9 +19,9 @@ export class LoginComponent implements OnInit {
   }
 
   submit(): void { 
-    this.userService.login(this.user).subscribe({ 
+    this.userService.register(this.user).subscribe({ 
       next: (data: any) => {
-        this.router.navigate(['taches'])
+        this.router.navigate(['']);
       }, 
       error: () => { this.error = true; }
     });
